@@ -1,0 +1,15 @@
+<?php
+
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'employeeCrud');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('BASE_URL', 'http://hackerrank.test/');
+define('UPLOAD_DIR', __DIR__ . '/../uploads/');
+define('EMAIL_FROM', 'test@gmail.com');
+
+// SMTP settings for PHPMailer
+define('SMTP_HOST', '');
+define('SMTP_USER', '');
+define('SMTP_PASS', '');
+define('SMTP_PORT', );

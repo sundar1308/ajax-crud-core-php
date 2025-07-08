@@ -1,0 +1,55 @@
+.tableDataRow a i,
+.sort-icon {
+  cursor: pointer;
+}
+.swal2-confirm.swal2-styled:hover {
+  background-color: #a69ff7 !important;
+  color: #fff !important;
+}
+.swal2-cancel.swal2-styled:hover {
+  background-color: #999 !important;
+  color: #fff !important;
+}
+.fa-trash {
+  color: rgb(244, 67, 54);
+}
+thead th {
+  background: none !important;
+  letter-spacing: 1px;
+}
+thead {
+  background: #639;
+}
+thead th,
+thead {
+  border: none !important;
+}
+.btnColor {
+  border: none !important;
+  color: #fff !important;
+  background: #639 !important;
+}
+.fa-pen-to-square {
+  color: #007bff;
+}
+.fa-download {
+  color: #c99703;
+}
+.fa-eye {
+  color: #17a2b8;
+}
+.page-item.active .page-link {
+  background: #639 !important;
+  border: none;
+}
+.page-item:not(.active) .page-link {
+  color: #000;
+}
+body {
+  background-image: url("../../assets/images/bg.jpeg");
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+thead tr {
+  border: none;
+}
