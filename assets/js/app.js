@@ -35,7 +35,7 @@ function loadEmployees() {
     },
     dataType: "json",
     success: function (res) {
-      console.log(res);
+      // console.log(res);
       if (res.status === "success") {
         $("#employeeTable tbody").html(res.data);
         buildPagination(res.total, res.page, res.limit);
