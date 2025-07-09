@@ -30,12 +30,18 @@ class Validator
 
     public static function validateImage($file)
     {
-        $allowedTypes = ['image/jpeg', 'image/png'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/heic', 'image/heif'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'heic'];
+
         $maxSize = 2 * 1024 * 1024; // 2MB
-        // print_r($file);
-        // exit;
-        return isset($file['type'], $file['size']) &&
-            in_array($file['type'], $allowedTypes) &&
+
+        return in_array($ext, $allowedExtensions) &&
+            in_array($mimeType, $allowedMimeTypes) &&
             $file['size'] <= $maxSize;
     }
 }

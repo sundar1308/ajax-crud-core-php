@@ -33,14 +33,37 @@ if (!empty($errors)) {
 }
 
 // Upload image
-$ext = pathinfo($image['name'], PATHINFO_EXTENSION);
+$ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
 $newFileName = uniqid('emp_', true) . '.' . $ext;
 $uploadPath = UPLOAD_DIR . $newFileName;
+$moved = true;
 
-if (!move_uploaded_file($image['tmp_name'], $uploadPath)) {
+if ($ext == 'heic') {
+    try {
+        $imagick = new Imagick();
+        $imagick->readImage($image['tmp_name']);
+        $imagick->setImageFormat('jpg');
+
+        // Save with .jpg extension
+        $newFileName = uniqid('emp_', true) . '.jpg';
+        $uploadPath = UPLOAD_DIR . $newFileName;
+        $imagick->writeImage($uploadPath);
+        $imagick->clear();
+        $imagick->destroy();
+        $moved = false;
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Try uploading png, jpeg, jpg formats']);
+        exit;
+    }
+}
+
+
+
+if ($moved && !move_uploaded_file($image['tmp_name'], $uploadPath)) {
     echo json_encode(['status' => 'error', 'message' => 'Image upload failed']);
     exit;
 }
+
 
 // Insert into DB
 $db = (new Database())->connect();

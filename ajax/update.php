@@ -28,9 +28,7 @@ if ($errorMsg = Validator::validateEmail($email, $id)) {
 if (!empty($image['name']) && !Validator::validateImage($image)) {
     $errors['profileImg'] = 'Invalid image (JPG/PNG, max 2MB).';
 }
-// echo "hsvbd";
-// print_r(isset($image['name']));
-// exit;
+
 if (!empty($errors)) {
     echo json_encode(['status' => 'error', 'errors' => $errors]);
     exit;
@@ -51,13 +49,37 @@ $imagePath = $current['profileImg'];
 
 if (!empty($image['name'])) {
     // Delete old image
-    $oldImage = UPLOAD_DIR . $current['profileImg'];
-    if (file_exists($oldImage)) unlink($oldImage);
+    $oldPath = UPLOAD_DIR . $imagePath;
+    if (file_exists($oldPath)) {
+        unlink($oldPath);
+    }
 
-    // Upload new image
-    $ext = pathinfo($image['name'], PATHINFO_EXTENSION);
-    $imagePath = uniqid('emp_', true) . '.' . $ext;
-    move_uploaded_file($image['tmp_name'], UPLOAD_DIR . $imagePath);
+    $ext = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
+    $isHeic = ($ext === 'heic');
+
+    // Set new file name
+    $newFileName = uniqid('emp_', true) . ($isHeic ? '.jpg' : ".$ext");
+    $uploadPath = UPLOAD_DIR . $newFileName;
+
+    try {
+        if ($isHeic) {
+            // Convert HEIC to JPG
+            $imagick = new Imagick();
+            $imagick->readImage($image['tmp_name']);
+            $imagick->setImageFormat('jpg');
+            $imagick->writeImage($uploadPath);
+            $imagick->clear();
+            $imagick->destroy();
+        } else {
+            // Move normal image
+            move_uploaded_file($image['tmp_name'], $uploadPath);
+        }
+
+        $imagePath = $newFileName;
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Try uploading PNG, JPEG, or JPG formats']);
+        exit;
+    }
 }
 
 $updated = $employee->update($id, $name, $email, $imagePath);
